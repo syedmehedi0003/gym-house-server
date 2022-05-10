@@ -28,8 +28,8 @@ async function run() {
         app.get('/service/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const service = await serviceCollection.findOne(query);
-            res.send(service);
+            const result = await serviceCollection.findOne(query);
+            res.send(result);
         });
 
         //Post
@@ -38,6 +38,27 @@ async function run() {
             const result = await serviceCollection.insertOne(newProduct);
             res.send(result);
         });
+
+        //Update
+        app.put('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedData = req.body;
+            const filter = { _id: ObjectId(id) };
+
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    // quantity: updatedData.quantity,
+                    quantity: updatedData.newQuantity,
+
+
+                }
+            };
+
+            const result = await serviceCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+
+        })
 
         //Delete
         app.delete('/service/:id', async (req, res) => {
