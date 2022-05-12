@@ -60,6 +60,23 @@ async function run() {
 
         })
 
+        //Delivered
+        app.put('/deliver/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const filter = { _id: ObjectId(id) };
+            const product = await serviceCollection.findOne(filter)
+            const updatedDoc = {
+                $set: {
+                    quantity: parseInt(product.quantity) - 1
+                }
+            };
+            const result = await serviceCollection.updateOne(filter, updatedDoc);
+            res.send(result)
+        })
+
+
+
         //Delete
         app.delete('/service/:id', async (req, res) => {
             const id = req.params.id;
@@ -86,3 +103,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log('Listening............', port);
 })
+
